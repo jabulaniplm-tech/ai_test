@@ -53,7 +53,8 @@
   <div id="statusMessage"></div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwQX-YiqL7G6-nYYYD4ywQ_C6E16nKuBV7nSTOszjy33M-Kg-kJgbpgoRlv6E7fGkVc_g/exec"; // Replace with your Apps Script Web App URL
+    // Replace with your actual Google Apps Script Web App URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxUoEwLCLABTGtqSN5gjV9GDINumB2f2zKYsI1kl2o9AoNHqZcPOykGCYO-mmMApLOC7A/exec";
 
     document.getElementById('researchForm').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -77,12 +78,12 @@
       .then(res => res.text())
       .then(msg => {
         statusDiv.style.color = "green";
-        statusDiv.textContent = "Data successfully synchronized! Tatenda / Siyabonga.";
+        statusDiv.textContent = msg; // should display "Success"
         document.getElementById('researchForm').reset();
       })
       .catch(error => {
         statusDiv.style.color = "red";
-        statusDiv.textContent = "Transmission failed. Check connectivity: " + error;
+        statusDiv.textContent = "Transmission failed: " + error;
       });
     });
   </script>
