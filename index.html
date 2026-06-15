@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robodzidzo Data Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 30px auto; padding: 20px; background-color: #f7f9fa; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #C92A2A; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; font-size: 16px; }
+        button:hover { background-color: #a61e1e; }
+        #statusMessage { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Robodzidzo Evaluation & Telemetry Portal</h2>
+    <form id="researchForm">
+        <div class="form-group">
+            <label for="fullName">Name / Participant ID:</label>
+            <input type="text" id="fullName" required>
+        </div>
+        <div class="form-group">
+            <label for="institution">Institution:</label>
+            <select id="institution" required>
+                <option value="Mutare Teachers College">Mutare Teachers College</option>
+                <option value="First Class Academy">First Class Academy</option>
+                <option value="Other Seminar Site">Other Seminar Site</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="sessionType">Session Type:</label>
+            <select id="sessionType" required>
+                <option value="Physics Lecture">Physics Lecture</option>
+                <option value="Physics Seminar">Physics Seminar</option>
+                <option value="Robotics Workshop">Robotics Workshop</option>
+                <option value="Research Supervision Consultation">Research Supervision Consultation</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="metricScore">Performance Rating / Self-Assessment Score (1-10):</label>
+            <input type="number" id="metricScore" min="1" max="10" required>
+        </div>
+        <div class="form-group">
+            <label for="feedbackText">Observations / Technical Feedback:</label>
+            <textarea id="feedbackText" rows="4" required></textarea>
+        </div>
+        <button type="submit">Submit Telemetry</button>
+    </form>
+
+    <div id="statusMessage"></div>
+
+    <script>
+        // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxjD5g2t6vXjFeXCTXEUfGtkQZ6SHJ-REI6obTDunpJbl-UGVxrGZWhL4DIC3b80qNC7A/exec";
+
+        document.getElementById('researchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.style.color = "orange";
+            statusDiv.textContent = "Transmitting telemetry to central database...";
+
+            // Package form data matching the keys expected by the Google Script
+            const payload = {
+                fullName: document.getElementById('fullName').value,
+                institution: document.getElementById('institution').value,
+                sessionType: document.getElementById('sessionType').value,
+                metricScore: parseInt(document.getElementById('metricScore').value),
+                feedbackText: document.getElementById('feedbackText').value
+            };
+
+            // Post asynchronously using Fetch API
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors", // Bypass browser CORS restrictions for standard web apps
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                statusDiv.style.color = "green";
+                statusDiv.textContent = "Data successfully synchronized! Tatenda / Siyabonga.";
+                document.getElementById('researchForm').reset();
+            })
+            .catch(error => {
+                statusDiv.style.color = "red";
+                statusDiv.textContent = "Transmission failed. Check connectivity: " + error;
+            });
+        });
+    </script>
+</body>
+</html>
